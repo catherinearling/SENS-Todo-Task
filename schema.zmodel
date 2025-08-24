@@ -42,6 +42,7 @@ model Space {
     slug      String      @unique @regex('^[0-9a-zA-Z]{4,16}$')
     members   SpaceUser[]
     lists     List[]
+    tasks     Task[] // space can have many tasks
     
     // require login
     @@deny('all', auth() == null)
@@ -102,6 +103,7 @@ model User {
     image         String?     @url
     lists         List[]
     todos         Todo[]
+    tasks         Task[]
 
     // next-auth
     accounts      Account[]
@@ -157,17 +159,48 @@ model List extends BaseEntity {
  */
 model Todo {
     id          String    @id @default(uuid())
+
+    //point to a Task instead of duplicating title/description
+    task      Task    @relation(fields: [taskId], references: [id])
+    taskId    String
+
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
+
     owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
     ownerId     String    @default(auth().id)
+
     list        List      @relation(fields: [listId], references: [id], onDelete: Cascade)
     listId      String
-    title       String    @length(1, 100)
     completedAt DateTime?
 
     // full access if the parent list is readable
     @@allow('all', check(list, 'read'))
+}
+
+model Task {
+    id          String     @id @default(cuid())
+    title       String
+    description String?
+
+    owner       User       @relation(fields: [ownerId], references: [id])
+    ownerId     String     @default(auth().id)
+
+    // which workspace it belongs to (so members can reuse it)
+    space       Space      @relation(fields: [spaceId], references: [id])
+    spaceId     String
+
+    // link back to todos that use this Task
+    todos       Todo[]
+
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+
+    @@allow('read', check(space, 'read'))     
+    @@allow('create', check(space, 'create')) 
+    @@allow('update', check(space, 'update')) 
+    @@allow('delete', check(space, 'delete'))  
+
 }
 
 /**

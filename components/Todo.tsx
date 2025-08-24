@@ -1,66 +1,43 @@
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { useDeleteTodo, useUpdateTodo } from '@lib/hooks';
 import { Todo, User } from '@prisma/client';
-import { ChangeEvent } from 'react';
-import Avatar from './Avatar';
-import TimeInfo from './TimeInfo';
+import { useDeleteTodo } from '@lib/hooks';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 type Props = {
-    value: Todo & { owner: User };
-    optimistic?: boolean;
+  value: Todo & { owner: User; task: { title: string; description?: string } };
+  optimistic?: boolean;
 };
 
 export default function TodoComponent({ value, optimistic }: Props) {
-    const { trigger: updateTodo } = useUpdateTodo({ optimisticUpdate: true });
-    const { trigger: deleteTodo } = useDeleteTodo({ optimisticUpdate: true });
+  const { trigger: deleteTodo } = useDeleteTodo({ optimisticUpdate: true });
 
-    const onDeleteTodo = () => {
-        void deleteTodo({ where: { id: value.id } });
-    };
+  const handleDelete = async () => {
+    await deleteTodo({ where: { id: value.id } });
+  };
 
-    const toggleCompleted = (completed: boolean) => {
-        if (completed === !!value.completedAt) {
-            return;
-        }
-        void updateTodo({
-            where: { id: value.id },
-            data: { completedAt: completed ? new Date() : null },
-        });
-    };
+  return (
+    <div className="border rounded-lg p-4 flex flex-col w-full lg:w-[480px]">
+      <div className="flex justify-between w-full mb-2">
+        <h3
+          className={`text-xl ${
+            value.completedAt ? 'line-through text-gray-400' : ''
+          }`}
+        >
+          {value.task?.title || 'No Task'}
+        </h3>
 
-    return (
-        <div className="border rounded-lg px-8 py-4 shadow-lg flex flex-col items-center w-full lg:w-[480px]">
-            <div className="flex justify-between w-full mb-4">
-                <h3
-                    className={`text-xl line-clamp-1 ${
-                        value.completedAt ? 'line-through text-gray-400 italic' : 'text-gray-700'
-                    }`}
-                >
-                    {value.title}
-                    {optimistic && <span className="loading loading-spinner loading-sm ml-1"></span>}
-                </h3>
-                <div className="flex">
-                    <input
-                        type="checkbox"
-                        className="checkbox mr-2"
-                        checked={!!value.completedAt}
-                        disabled={optimistic}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => toggleCompleted(e.currentTarget.checked)}
-                    />
-                    <TrashIcon
-                        className={`w-6 h-6 ${
-                            optimistic ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 cursor-pointer'
-                        }`}
-                        onClick={() => {
-                            !optimistic && onDeleteTodo();
-                        }}
-                    />
-                </div>
-            </div>
-            <div className="flex justify-end w-full space-x-2">
-                <TimeInfo value={value} />
-                <Avatar user={value.owner} size={18} />
-            </div>
-        </div>
-    );
+        {/* Delete button */}
+        <button
+          onClick={handleDelete}
+          className="text-red-500 hover:text-red-700 transition"
+          title="Delete task"
+        >
+          <TrashIcon className="w-5 h-5" />
+        </button>
+      </div>
+
+      {value.task?.description && (
+        <p className="text-gray-500">{value.task.description}</p>
+      )}
+    </div>
+  );
 }

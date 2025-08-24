@@ -4,100 +4,116 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url = env("DATABASE_URL")
 }
 
 generator js {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 enum SpaceUserRole {
-  USER
-  ADMIN
+    USER
+    ADMIN
 }
 
 model Space {
-  id        String      @id() @default(uuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt()
-  owner     User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId   String
-  name      String
-  slug      String      @unique()
-  members   SpaceUser[]
-  lists     List[]
+    id String @id() @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+    owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String
+    name String
+    slug String @unique()
+    members SpaceUser[]
+    lists List[]
+    tasks Task[]
 }
 
 model SpaceUser {
-  id        String        @id() @default(uuid())
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt()
-  space     Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  spaceId   String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  role      SpaceUserRole
+    id String @id() @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+    space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+    spaceId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
+    role SpaceUserRole
 
-  @@unique([userId, spaceId])
+    @@unique([userId, spaceId])
 }
 
 model User {
-  id            String      @id() @default(uuid())
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt()
-  email         String      @unique()
-  emailVerified DateTime?
-  password      String?
-  name          String?
-  ownedSpaces   Space[]
-  memberships   SpaceUser[]
-  image         String?
-  lists         List[]
-  todos         Todo[]
-  accounts      Account[]
+    id String @id() @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+    email String @unique()
+    emailVerified DateTime?
+    password String?
+    name String?
+    ownedSpaces Space[]
+    memberships SpaceUser[]
+    image String?
+    lists List[]
+    todos Todo[]
+    tasks Task[]
+    accounts Account[]
 }
 
 model List {
-  id        String   @id() @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  spaceId   String
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId   String
-  title     String
-  private   Boolean  @default(false)
-  todos     Todo[]
+    id String @id() @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+    space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+    spaceId String
+    owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String
+    title String
+    private Boolean @default(false)
+    todos Todo[]
 }
 
 model Todo {
-  id          String    @id() @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt()
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId     String
-  list        List      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  listId      String
-  title       String
-  completedAt DateTime?
+    id String @id() @default(uuid())
+    task Task @relation(fields: [taskId], references: [id])
+    taskId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
+    owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String
+    list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+    listId String
+    completedAt DateTime?
+}
+
+model Task {
+    id String @id() @default(cuid())
+    title String
+    description String?
+    owner User @relation(fields: [ownerId], references: [id])
+    ownerId String
+    space Space @relation(fields: [spaceId], references: [id])
+    spaceId String
+    todos Todo[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt()
 }
 
 model Account {
-  id                       String  @id() @default(uuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String?
-  refresh_token_expires_in Int?
-  access_token             String?
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String?
-  session_state            String?
-  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id String @id() @default(uuid())
+    userId String
+    type String
+    provider String
+    providerAccountId String
+    refresh_token String?
+    refresh_token_expires_in Int?
+    access_token String?
+    expires_at Int?
+    token_type String?
+    scope String?
+    id_token String?
+    session_state String?
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+    @@unique([provider, providerAccountId])
 }
