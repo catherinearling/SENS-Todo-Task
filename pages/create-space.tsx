@@ -58,12 +58,13 @@ const CreateSpace: NextPage = () => {
 
     return (
         <WithNavBar>
-            <div className="flex items-center justify-center h-full">
-                <form onSubmit={(e) => void onSubmit(e)}>
-                    <h1 className="text-3xl mb-8">Create a space</h1>
+            <div className="flex items-center justify-center h-full py-12 bg-[#FAF9F6]">
+                <form onSubmit={(e) => void onSubmit(e)}          
+                    className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+                    <h1 className="font-serif text-3xl text-text-primary mb-8">Create a space</h1>
                     <div className="flex-col space-y-4">
                         <div>
-                            <label htmlFor="name" className="text-lg">
+                            <label htmlFor="name" className="text-lg font-serif text-text-primary mb-1">
                                 Space name
                             </label>
                             <input
@@ -71,13 +72,17 @@ const CreateSpace: NextPage = () => {
                                 type="text"
                                 required
                                 placeholder="Name of your space"
-                                className="input input-bordered w-full max-w-xs mt-2"
+                                className="
+                                w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm
+                                focus:outline-none focus:ring-2 focus:ring-accent-gold
+                                font-sans text-text-primary
+                                "
                                 autoFocus
                                 onChange={(e: FormEvent<HTMLInputElement>) => setName(e.currentTarget.value)}
                             />
                         </div>
                         <div>
-                            <label htmlFor="slug" className="text-lg">
+                            <label htmlFor="slug" className="text-lg font-serif text-text-primary mb-1">
                                 Space slug
                             </label>
                             <input
@@ -85,7 +90,11 @@ const CreateSpace: NextPage = () => {
                                 type="text"
                                 required
                                 placeholder="Slug of your space"
-                                className="input input-bordered w-full max-w-xs mt-2"
+                                className="
+                                w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm
+                                focus:outline-none focus:ring-2 focus:ring-accent-gold
+                                font-sans text-text-primary
+                                "
                                 onChange={(e: FormEvent<HTMLInputElement>) => setSlug(e.currentTarget.value)}
                             />
                         </div>
@@ -96,10 +105,20 @@ const CreateSpace: NextPage = () => {
                             type="submit"
                             disabled={name.length < 4 || name.length > 20 || !slug.match(/^[0-9a-zA-Z]{4,16}$/)}
                             value="Create"
-                            className="btn btn-primary px-8"
+                            className="
+                                btn flex-1 px-6 py-2 rounded-xl
+                                bg-[#C5A46D] text-[#1A1A1A] font-sans shadow-md
+                                transition-all duration-300 ease-in-out
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                            "
                         />
                         <button
-                            className="btn btn-outline"
+                            className="
+                                btn flex-1 px-6 py-2 rounded-xl
+                                border border-gray-400 text-text-primary font-sans
+                                hover:border-accent-gold hover:text-accent-gold
+                                transition
+                            "
                             onClick={(e) => {
                                 e.preventDefault();
                                 void router.push('/');

@@ -63,40 +63,61 @@ function CreateDialog() {
                 }}
             />
             <div className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-xl mb-8">Create a Todo list</h3>
+                <div className="modal-box bg-[#FAF9F6] border border-gray-200 rounded-2xl shadow-md p-6">
+                    <h3 className="font-serif text-2xl text-text-primary mb-6">Create a Todo list</h3>
                     <form onSubmit={onSubmit}>
                         <div className="flex flex-col space-y-4">
                             <div className="flex items-center">
-                                <label htmlFor="title" className="text-lg inline-block w-20">
-                                    Title
+                                <label htmlFor="title" className="text-lg w-24 font-serif text-text-primary">
+                                    Name
                                 </label>
                                 <input
-                                    id="title"
+                                    id="Name"
                                     type="text"
                                     required
-                                    placeholder="Title of your list"
+                                    placeholder="Name of your list"
                                     ref={inputRef}
-                                    className="input input-bordered w-full max-w-xs mt-2"
+                                    className="
+                                        input-bordered w-full max-w-xs
+                                        rounded-xl border border-gray-300
+                                        px-4 py-2 shadow-sm
+                                        focus:outline-none focus:ring-2 focus:ring-accent-gold
+                                        font-sans text-text-primary
+                                    "
                                     value={title}
                                     onChange={(e: FormEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)}
                                 />
                             </div>
                             <div className="flex items-center">
-                                <label htmlFor="private" className="text-lg inline-block w-20">
+                                <label htmlFor="private" className="text-lg w-24 font-serif text-text-primary">
                                     Private
                                 </label>
                                 <input
                                     id="private"
                                     type="checkbox"
-                                    className="checkbox"
+                                    cclassName="checkbox accent-accent-gold"
                                     onChange={(e: FormEvent<HTMLInputElement>) => setPrivate(e.currentTarget.checked)}
                                 />
                             </div>
                         </div>
-                        <div className="modal-action">
-                            <input className="btn btn-primary" type="submit" value="Create" />
-                            <label htmlFor="create-list-modal" className="btn btn-outline">
+                        <div className="modal-action mt-4 space-x-3">
+                            <input 
+                                    className="
+                                        btn flex items-center justify-center px-4 py-2
+                                        bg-[#C5A46D] text-[#1A1A1A] font-sans
+                                        rounded-xl shadow-md
+                                        transition-all duration-300 ease-in-out
+                                        " 
+                                    type="submit" 
+                                    value="Create" />
+                            <label htmlFor="create-list-modal" 
+                                    className="
+                                    btn btn-outline rounded-xl font-sans
+                                    border-gray-400 text-text-primary
+                                    hover:border-accent-gold hover:text-accent-gold
+                                    transition
+                                    "
+                                    >
                                 Cancel
                             </label>
                         </div>
@@ -142,7 +163,11 @@ export default function SpaceHome(props: Props) {
             </div>
             <div className="p-8">
                 <div className="w-full flex flex-col md:flex-row mb-8 space-y-4 md:space-y-0 md:space-x-4">
-                    <label htmlFor="create-list-modal" className="btn btn-primary btn-wide modal-button">
+                    <label htmlFor="create-list-modal" 
+                            className="
+                                    btn px-6 py-2 rounded-xl bg-[#C5A46D] text-[#1A1A1A] font-sans shadow-md
+                                    cursor-pointer
+                                    ">
                         Create a list
                     </label>
                     <SpaceMembers />

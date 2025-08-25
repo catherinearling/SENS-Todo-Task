@@ -16,13 +16,16 @@ const Home: NextPage<Props> = ({ spaces }) => {
     return (
         <WithNavBar>
             {user && (
-                <div className="mt-8 text-center flex flex-col items-center w-full">
-                    <h1 className="text-2xl text-gray-800">Welcome {user.name || user.email}!</h1>
+                <div className="mt-8 flex flex-col items-center w-full bg-[#FAF9F6] min-h-screen px-4">
+                    <h1 className="font-serif text-3xl text-text-primary mb-6">
+                        Welcome {user.name || user.email}!
+                    </h1>
 
-                    <div className="w-full p-8">
-                        <h2 className="text-lg md:text-xl text-left mb-8 text-gray-700">
+                    <div className="w-full max-w-4xl p-8">
+                        <h2 className="font-sans text-lg md:text-xl text-text-secondary mb-8">
                             Choose a space to start, or{' '}
-                            <Link href="/create-space" className="link link-primary">
+                            <Link href="/create-space" 
+                                    className="text-[#C5A46D] hover:text-[#593F15] font-semibold transition-colors duration-300">
                                 create a new one.
                             </Link>
                         </h2>
